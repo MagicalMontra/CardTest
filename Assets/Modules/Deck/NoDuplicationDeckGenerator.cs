@@ -1,23 +1,20 @@
-﻿using System;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine;
 
 namespace Modules.Card
 {
     public class NoDuplicationDeckGenerator : MonoBehaviour, IDeckGenerator
     {
-        [SerializeField] private CardSuitSettings _suitSettings;
+        [SerializeField] private CardElementSettings _elementSettings;
         [SerializeField] private CardRankSettings _rankSettings;
         [SerializeField] private CardColorSettings _colorSettings;
-        public Card[] Create()
+        public List<CardData> Create()
         {
-            List<Card> _cards = new List<Card>();
+            List<CardData> _cards = new List<CardData>();
             
-            for (int i = 0; i < _suitSettings.suits.Count; i++)
+            for (int i = 0; i < _elementSettings.suits.Count; i++)
             {
-                string selectSuit = _suitSettings.suits[i];
+                string selectSuit = _elementSettings.suits[i];
                 string selectRank;
                 string selectColor;
 
@@ -28,16 +25,17 @@ namespace Modules.Card
                     for (int k = 0; k < _colorSettings.colors.Count; k++)
                     {
                         selectColor = _colorSettings.colors[k];
-                        _cards.Add(new Card(selectSuit, selectColor, selectRank));
+                        _cards.Add(new CardData(selectSuit, selectColor, selectRank));
                     }
+                    
                 }
+                
             }
 
-            ValidateDuplicate(_cards.ToArray(), _cards.Count);
-
-            return _cards.ToArray();
+            ValidateDuplicate(_cards, _cards.Count);
+            return Shuffle(_cards);
         }
-        private void ValidateDuplicate(Card[] cards, int size)
+        private void ValidateDuplicate(List<CardData> cards, int size)
         {
             int i;
             string debug = "The repeating" + " elements are : ";
@@ -48,7 +46,7 @@ namespace Modules.Card
                 if (current >= size)
                     break;
 
-                var sameSuit = cards[current].suit == cards[i].suit;
+                var sameSuit = cards[current].element == cards[i].element;
                 var sameColor = cards[current].color == cards[i].color;
                 var sameRank = cards[current].rank == cards[i].rank;
                 
@@ -57,6 +55,18 @@ namespace Modules.Card
                 
                 current++;
             }
+        }
+        private List<CardData> Shuffle(List<CardData> cards)
+        {
+            int n = cards.Count;
+            while (n > 1)
+            {
+                int k = Random.Range(0, n);
+                n--;
+                (cards[n], cards[k]) = (cards[k], cards[n]);
+            }
+
+            return cards;
         }
     }
 }
