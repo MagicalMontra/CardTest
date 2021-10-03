@@ -2,6 +2,6 @@
 {
     public interface IDeckGenerator
     {
-        void Generate();
+        Card[] Create();
     }
 }
