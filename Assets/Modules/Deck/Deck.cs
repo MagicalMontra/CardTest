@@ -19,6 +19,10 @@ namespace Modules.Card
             _deckGenerator ??= _generatorObject.GetComponent<IDeckGenerator>();
             _cards = _deckGenerator.Create();
         }
+        public CardData TryDraw()
+        {
+            return _cardDrawer.Draw(_cards);
+        }
         public CardData TryDraw(ILifePoint lifePoint)
         {
             lifePoint.Modify(-1);
