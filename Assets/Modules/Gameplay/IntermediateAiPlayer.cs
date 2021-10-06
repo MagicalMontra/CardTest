@@ -34,6 +34,12 @@ namespace Modules.Gameplay
             for (int i = 0; i < _startHandCard; i++)
                 _cards.Add(_deck.TryDraw());
         }
+        public void OnRoundStart()
+        {
+            commit = false;
+            _cards.Add(_deck.TryDraw());
+            _cards.Add(_deck.TryDraw());
+        }
         public async UniTask<CardData[]> Process()
         {
             while (_cards.Count < 3)

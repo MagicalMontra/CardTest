@@ -13,7 +13,11 @@ namespace Modules.Gameplay
         public float IsMatch(CardData[] commitCards)
         {
             var allMatch = commitCards.All(card => card.element == _elementValue && card.rank == _rankValue && card.color == _colorValue);
-            return float.MaxValue;
+            
+            if (allMatch)
+                return float.PositiveInfinity;
+
+            return 0;
         }
     }
 }

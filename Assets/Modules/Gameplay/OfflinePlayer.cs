@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Modules.Card;
 using Modules.Player;
@@ -8,26 +7,6 @@ using UnityEngine.UI;
 
 namespace Modules.Gameplay
 {
-    public class OfflinePlayerHandState : MonoBehaviour, IGameState
-    {
-        public string stateName => "TurnState";
-
-        [SerializeField] private int _aiCount;
-
-        public bool Validate()
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    public interface IPlayer
-    {
-        bool commit { get; }
-        void AddCard();
-        void OnGameStart();
-        UniTask<CardData[]> Process();
-    }
-
     public class OfflinePlayer : MonoBehaviour, IPlayer
     {
         public bool commit { get; private set; }
@@ -64,6 +43,18 @@ namespace Modules.Gameplay
         {
             for (int i = 0; i < _startHandCard; i++)
                 _cards.Add(_deck.TryDraw());
+            
+            for (int i = 0; i < _cards.Count; i++)
+                _handCards[i].Initialize(_cards[i], SelectCard);
+        }
+        public void OnRoundStart()
+        {
+            commit = false;
+            _cards.Add(_deck.TryDraw());
+            _cards.Add(_deck.TryDraw());
+            
+            for (int i = 0; i < _handCards.Length; i++)
+                _handCards[i].Dispose();
             
             for (int i = 0; i < _cards.Count; i++)
                 _handCards[i].Initialize(_cards[i], SelectCard);
