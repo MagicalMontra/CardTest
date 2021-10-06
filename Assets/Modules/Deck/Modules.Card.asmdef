@@ -1,0 +1,16 @@
+{
+    "name": "Modules.Card",
+    "rootNamespace": "Modules.Card",
+    "references": [
+        "GUID:4b32b86d578be9642b7f3df4c9528864"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

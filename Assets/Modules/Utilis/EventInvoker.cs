@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Modules.Card
+namespace Modules.Utilis
 {
     public class EventInvoker : MonoBehaviour
     {

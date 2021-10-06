@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Modules.Player;
+using Modules.Infastructure;
 using UnityEngine;
 
 namespace Modules.Card

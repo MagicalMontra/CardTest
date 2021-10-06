@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Modules.Card;
-using Modules.Player;
+using Modules.Infastructure;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +9,10 @@ namespace Modules.Gameplay
 {
     public class OfflinePlayer : MonoBehaviour, IPlayer
     {
+        public string id { get; private set; }
         public bool commit { get; private set; }
+        
+        public ILifePoint lifePoint => _lifePoint;
         
         [SerializeField] private int _handCardCount = 7;
         [SerializeField] private int _startHandCard = 5;
@@ -61,6 +64,8 @@ namespace Modules.Gameplay
         }
         private void Awake()
         {
+            id = "Player";
+            
             _lifePoint ??= _lifePointObject.GetComponent<ILifePoint>();
             _handCards = new CardVisual[_handCardCount];
 

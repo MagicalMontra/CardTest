@@ -1,5 +1,5 @@
 ﻿using System;
-using Modules.Card;
+using Modules.Infastructure;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

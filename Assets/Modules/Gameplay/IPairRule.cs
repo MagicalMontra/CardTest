@@ -1,8 +1,8 @@
-﻿using Modules.Card;
+﻿using Modules.Infastructure;
 
 namespace Modules.Gameplay
 {
-    public interface IGameRule
+    public interface IPairRule
     {
         float CalculatePair(CardData[] pair);
     }

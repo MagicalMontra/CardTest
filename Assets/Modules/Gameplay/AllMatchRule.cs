@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Modules.Card;
+using Modules.Infastructure;
 using UnityEngine;
 
 namespace Modules.Gameplay
@@ -12,7 +13,7 @@ namespace Modules.Gameplay
 
         public float IsMatch(CardData[] commitCards)
         {
-            var allMatch = commitCards.All(card => card.element == _elementValue && card.rank == _rankValue && card.color == _colorValue);
+            var allMatch = commitCards.Any(card => card.element == _elementValue && card.rank == _rankValue && card.color == _colorValue);
             
             if (allMatch)
                 return float.PositiveInfinity;

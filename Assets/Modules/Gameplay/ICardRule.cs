@@ -1,4 +1,4 @@
-﻿using Modules.Card;
+﻿using Modules.Infastructure;
 
 namespace Modules.Gameplay
 {

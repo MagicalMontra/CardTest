@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 
-namespace Modules.Player
+namespace Modules.Infastructure
 {
     public class SimpleLifePoint : MonoBehaviour, ILifePoint
     {
+        public float value => _currentLP;
+        
         [SerializeField] private int _initLP;
+        
         private float _currentLP;
+
         public void Modify(float value)
         {
             if (_currentLP + value <= 0)

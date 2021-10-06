@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Modules.Card
+namespace Modules.Infastructure
 {
     public class CardData
     {

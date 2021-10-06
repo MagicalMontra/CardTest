@@ -1,4 +1,4 @@
-﻿using Modules.Card;
+﻿using Modules.Infastructure;
 using UnityEngine;
 
 namespace Modules.Gameplay
@@ -7,11 +7,11 @@ namespace Modules.Gameplay
     {
         [SerializeField] private GameObject _gameRuleObject;
 
-        private IGameRule _gameRule;
+        private IPairRule _pairRule;
 
         private void Awake()
         {
-            _gameRule ??= _gameRuleObject.GetComponent<IGameRule>();
+            _pairRule ??= _gameRuleObject.GetComponent<IPairRule>();
         }
         public CardData[] FindPair(CardData[] handCards)
         {
@@ -33,7 +33,7 @@ namespace Modules.Gameplay
                 for (int j = 1; j < handCards.Length; j++)
                 {
                     candidatePair[1] = handCards[j];
-                    var currentValue = _gameRule.CalculatePair(candidatePair);
+                    var currentValue = _pairRule.CalculatePair(candidatePair);
 
                     if (currentValue < previousValue) 
                         continue;
