@@ -7,13 +7,9 @@ namespace Modules.Gameplay
 {
     public class AllMatchRule : MonoBehaviour, ICardRule
     {
-        [SerializeField] private string _rankValue;
-        [SerializeField] private string _colorValue;
-        [SerializeField] private string _elementValue;
-
         public float IsMatch(CardData[] commitCards)
         {
-            var allMatch = commitCards.Any(card => card.element == _elementValue && card.rank == _rankValue && card.color == _colorValue);
+            var allMatch = commitCards.All(card => card.element == commitCards[0].element && card.color == commitCards[0].color && card.rank == commitCards[0].rank);
             
             if (allMatch)
                 return float.PositiveInfinity;

@@ -7,9 +7,8 @@ namespace Modules.Gameplay
 {
     public class ElementRankMatchCardRule : MonoBehaviour, ICardRule
     {
+
         [SerializeField] private float _value;
-        [SerializeField] private string _rankValue;
-        [SerializeField] private string _elementValue;
 
         public float IsMatch(CardData[] commitCards)
         {
@@ -21,9 +20,9 @@ namespace Modules.Gameplay
                 resultRank += number;
             }
             
-            var elementRankMatch = commitCards.All(card => card.element == _elementValue && card.rank == _rankValue);
+            var elementRankMatch = commitCards.All(card => card.element == commitCards[0].element && card.rank == commitCards[0].rank);
             
-            return elementRankMatch ? _value : resultRank;
+            return elementRankMatch ? _value : 0;
         }
     }
 }

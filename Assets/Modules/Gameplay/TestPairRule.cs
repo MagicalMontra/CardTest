@@ -9,19 +9,34 @@ namespace Modules.Gameplay
 {
     public class TestPairRule : MonoBehaviour, IPairRule
     {
-        [SerializeField] private GameObject[] _cardRuleObjects;
+        [SerializeField] private GameObject _normalRuleObject;
+        [SerializeField] private GameObject[] _cardSpeicalRuleObjects;
 
+        private ICardRule _normalRule;
         private ICardRule[] _cardRules;
         public float CalculatePair(CardData[] pair)
         {
-            _cardRules ??= new ICardRule[_cardRuleObjects.Length];
+            _normalRule ??= _normalRuleObject.GetComponent<ICardRule>();
+            _cardRules ??= new ICardRule[_cardSpeicalRuleObjects.Length];
 
-            for (int i = 0; i < _cardRuleObjects.Length; i++)
+            for (int i = 0; i < _cardSpeicalRuleObjects.Length; i++)
             {
-                _cardRules[i] = _cardRuleObjects[i].GetComponent<ICardRule>();
+                _cardRules[i] = _cardSpeicalRuleObjects[i].GetComponent<ICardRule>();
             }
+
+            var priority = 99;
+            var mostValue = -1f;
+            for (int i = 0; i < _cardRules.Length; i++)
+            {
+                var value = _cardRules[i].IsMatch(pair);
+
+                if (value > 0 && value > mostValue)
+                    mostValue = value;
+            }
+
+            if (mostValue <= 0)
+                mostValue = _normalRule.IsMatch(pair);
             
-            var mostValue = _cardRules.Max(rule => rule.IsMatch(pair));
             return mostValue;
         }
     }

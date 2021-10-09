@@ -7,9 +7,8 @@ namespace Modules.Gameplay
 {
     public class ElementColorMatchCardRule : MonoBehaviour, ICardRule
     {
+
         [SerializeField] private float _multipier = 2f;
-        [SerializeField] private string _colorValue;
-        [SerializeField] private string _elementValue;
 
         public float IsMatch(CardData[] commitCards)
         {
@@ -21,12 +20,12 @@ namespace Modules.Gameplay
                 resultRank += number;
             }
 
-            var elementColorMatch = commitCards.All(card => card.element == _elementValue && card.color == _colorValue);
+            var elementColorMatch = commitCards.All(card => card.color == commitCards[0].color && card.element == commitCards[0].element);
             
             if (elementColorMatch)
                 return resultRank * _multipier;
 
-            return resultRank;
+            return 0;
         }
     }
 }

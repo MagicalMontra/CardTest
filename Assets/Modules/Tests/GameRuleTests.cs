@@ -19,10 +19,27 @@ namespace Modules.Tests
            Assert.That(ruleObject != null);
            Assert.That(gameRule != null);
         }
+        
+        [Test]
+        [TestCase(float.PositiveInfinity, new string[]{ "Fire", "Red", "F" }, new string[]{ "Fire", "Red", "F" })]
+        [TestCase(float.PositiveInfinity, new string[]{ "Fire", "Red", "10" }, new string[]{ "Fire", "Red", "10" })]
+        [TestCase(11, new string[]{ "Fire", "Brown", "10" }, new string[]{ "Fire", "Red", "10" })]
+        [TestCase(20, new string[]{ "Fire", "Red", "10" }, new string[]{ "Fire", "Red", "F" })]
+        [TestCase(10, new string[]{ "Fire", "Brown", "10" }, new string[]{ "Fire", "Red", "F" })]
+        [TestCase(20.5f, new string[]{ "Water", "Red", "10" }, new string[]{ "Fire", "Red", "10" })]
+        public void PairValueTest(float expectedValue, string[] cardOne, string[] cardTwo)
+        {
+            CardData[] pair = {new CardData(cardOne[0], cardOne[1], cardOne[2]), new CardData(cardTwo[0], cardTwo[1], cardTwo[2])};
+            var pairRuleObject = Object.Instantiate(Resources.Load<GameObject>("PairRule"));
+            var pairRule = pairRuleObject.GetComponent<IPairRule>();
+            var value = pairRule.CalculatePair(pair);
+            Debug.Log($"value is {value}, expected {expectedValue}");
+            Assert.AreEqual(expectedValue, value);
+        }
         [Test]
         public void SingleAllMatchTest()
         {
-            var gameRuleObject = Object.Instantiate(Resources.Load<GameObject>("GameRule"));
+            var gameRuleObject = Object.Instantiate(Resources.Load<GameObject>("ChosenOneAllMatchRule"));
             var realPlayerObject = Object.Instantiate(Resources.Load<GameObject>("TestPlayer"));
 
             var pairRuleObject = Object.Instantiate(Resources.Load<GameObject>("PairRule"));
@@ -58,7 +75,7 @@ namespace Modules.Tests
         [Test]
         public void MultipleAllMatchTest()
         {
-            var gameRuleObject = Object.Instantiate(Resources.Load<GameObject>("GameRule"));
+            var gameRuleObject = Object.Instantiate(Resources.Load<GameObject>("ChosenOneAllMatchRule"));
             var realPlayerObject = Object.Instantiate(Resources.Load<GameObject>("TestPlayer"));
 
             var pairRuleObject = Object.Instantiate(Resources.Load<GameObject>("PairRule"));
@@ -84,7 +101,7 @@ namespace Modules.Tests
             }
             
             var winners = gameRule.DecideWinner(_playerHands);
-            Debug.Log(winners.Count);
+            Debug.Log($"commited hands:{_playerHands.Count}  winners:{winners.Count}");
             Assert.AreEqual(0, winners.Count);
         }
     }

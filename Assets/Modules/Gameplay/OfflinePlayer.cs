@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Modules.Card;
 using Modules.Infastructure;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,7 @@ namespace Modules.Gameplay
     {
         public string id { get; private set; }
         public bool commit { get; private set; }
+        public int cardCount => _cards.Count;
         
         public ILifePoint lifePoint => _lifePoint;
         
@@ -19,6 +22,8 @@ namespace Modules.Gameplay
         
         [SerializeField] private Deck _deck;
         [SerializeField] private Button _playButton;
+        [SerializeField] private Button _drawButton;
+
         [SerializeField] private Transform _cardCanvasGroup;
         [SerializeField] private GameObject _lifePointObject;
         [SerializeField] private CardVisual _cardVisualPrefab;
@@ -26,11 +31,15 @@ namespace Modules.Gameplay
         
         private ILifePoint _lifePoint;
         private CardVisual[] _handCards;
-        private CardData[] _selectedPairs;
         private List<CardData> _cards = new List<CardData>();
+        private CardData _slotOne;
+        private CardData _slotTwo;
         
         public void AddCard()
         {
+            if (lifePoint.value <= 1)
+                return;
+            
             if (_cards.Count >= 7)
                 return;
             
@@ -44,23 +53,41 @@ namespace Modules.Gameplay
         }
         public void OnGameStart()
         {
+            commit = false;
+            
             for (int i = 0; i < _startHandCard; i++)
                 _cards.Add(_deck.TryDraw());
-            
-            for (int i = 0; i < _cards.Count; i++)
-                _handCards[i].Initialize(_cards[i], SelectCard);
-        }
-        public void OnRoundStart()
-        {
-            commit = false;
-            _cards.Add(_deck.TryDraw());
-            _cards.Add(_deck.TryDraw());
             
             for (int i = 0; i < _handCards.Length; i++)
                 _handCards[i].Dispose();
             
             for (int i = 0; i < _cards.Count; i++)
+            {
+                if (i > _handCards.Length - 1)
+                    continue;
+
                 _handCards[i].Initialize(_cards[i], SelectCard);
+            }
+        }
+        public void OnRoundStart()
+        {
+            commit = false;
+            _slotOne = null;
+            _slotTwo = null;
+            _playButton.interactable = false;
+            _cards.Add(_deck.TryDraw());
+            _cards.Add(_deck.TryDraw());
+            
+            for (int i = 0; i < _handCards.Length; i++)
+                _handCards[i].Dispose();
+
+            for (int i = 0; i < _cards.Count; i++)
+            {
+                if (i > _handCards.Length - 1)
+                    continue;
+
+                _handCards[i].Initialize(_cards[i], SelectCard);
+            }
         }
         private void Awake()
         {
@@ -72,14 +99,29 @@ namespace Modules.Gameplay
             for (int i = 0; i < _handCardCount; i++)
                 _handCards[i] = Instantiate(_cardVisualPrefab, _cardCanvasGroup);
             
+            _drawButton.onClick.RemoveAllListeners();
+            _drawButton.onClick.AddListener(AddCard);
+            
             _playButton.onClick.RemoveAllListeners();
             _playButton.onClick.AddListener(CommitCard);
         }
 
         private void CommitCard()
         {
-            var bothSelected = _selectedPairs[0] != null && _selectedPairs[1] != null;
-            commit = bothSelected;
+            commit = _slotOne != null && _slotTwo != null;
+            _cards.Remove(_slotOne);
+            _cards.Remove(_slotTwo);
+            
+            for (int i = 0; i < _handCards.Length; i++)
+                _handCards[i].Dispose();
+            
+            for (int i = 0; i < _cards.Count; i++)
+            {
+                if (i > _handCards.Length - 1)
+                    continue;
+
+                _handCards[i].Initialize(_cards[i], SelectCard);
+            }
         }
         private void SelectCard(CardData cardData)
         {
@@ -88,35 +130,31 @@ namespace Modules.Gameplay
             if (index > _cards.Count)
                 return;
 
-            var slotOneEmpty = _cards[0] == null;
-            
-            if (slotOneEmpty)
+            if (_slotOne == null)
             {
-                _selectedPairs[0] = _cards[index];
+                _slotOne = _cards[index];
                 return;
             }
 
-            var slotTwoEmpty = _selectedPairs[1] == null;
-
-            if (slotTwoEmpty)
+            if (_slotTwo == null && _cards[index] != _slotOne)
             {
-                _selectedPairs[1] = _cards[index];
+                _slotTwo = _cards[index];
+                _playButton.interactable = true;
                 return;
             }
 
-            var bothSlotSelected = _selectedPairs[0] != null && _selectedPairs[1] != null;
+            if (_slotOne != null && _slotTwo != null)
+            {
+                _slotOne = null;
+                _slotTwo = null;
+            }
 
-            if (!bothSlotSelected) 
-                return;
-            
-            _selectedPairs[0] = null;
-            _selectedPairs[1] = null;
             SelectCard(cardData);
         }
         public async UniTask<CardData[]> Process()
         {
             await UniTask.WaitUntil(() => commit);
-            return _selectedPairs;
+            return new []{ _slotOne, _slotTwo };
         }
     }
 }

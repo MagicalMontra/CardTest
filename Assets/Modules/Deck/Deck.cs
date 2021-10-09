@@ -16,6 +16,7 @@ namespace Modules.Card
 
         public void TryCreateDeck()
         {
+            _cardDrawer ??= _cardDrawerObject.GetComponent<ICardDrawer>();
             _deckGenerator ??= _generatorObject.GetComponent<IDeckGenerator>();
             _cards = _deckGenerator.Create();
         }

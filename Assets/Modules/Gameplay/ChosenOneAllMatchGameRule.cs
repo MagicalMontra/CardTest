@@ -11,7 +11,7 @@ namespace Modules.Gameplay
             var allMatchPlayerCount = playersValue.Count(pv => float.IsPositiveInfinity(pv.Value));
             Dictionary<IPlayer, float> _winners = new Dictionary<IPlayer, float>();
             
-            if (allMatchPlayerCount < 2)
+            if (allMatchPlayerCount == 1)
             {
                 var chosenOne = playersValue.First(pv => float.IsPositiveInfinity(pv.Value));
                 _winners.Add(chosenOne.Key, chosenOne.Value);

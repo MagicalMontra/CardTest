@@ -11,6 +11,7 @@ namespace Modules.Gameplay
     {
         public string id { get; private set; }
         public bool commit { get; private set; }
+        public int cardCount => _cards.Count;
         public ILifePoint lifePoint => _lifePoint;
 
         [SerializeField] private int _startHandCard = 3;
@@ -29,6 +30,9 @@ namespace Modules.Gameplay
         }
         public void AddCard()
         {
+            if (_cards.Count >= 7)
+                return;
+            
             _cards.Add(_deck.TryDraw(_lifePoint));
         }
         public void OnGameStart()
@@ -44,13 +48,15 @@ namespace Modules.Gameplay
         }
         public async UniTask<CardData[]> Process()
         {
-            while (_cards.Count < 3)
+            while (_cards.Count < 5)
             {
                 AddCard();
+                Debug.Log($"Ai {id} draw a card");
                 await UniTask.Delay(100);
             }
             
             var bestPair = _aiBrain.FindPair(_cards.ToArray());
+            Debug.Log($"Ai {id} commited {bestPair[0].rank}{bestPair[0].color}{bestPair[0].element} & {bestPair[1].rank}{bestPair[1].color}{bestPair[1].element}");
             commit = true;
             return bestPair;
         }

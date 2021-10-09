@@ -5,13 +5,13 @@ namespace Modules.Gameplay
 {
     public class IntermediateAiBrain : MonoBehaviour, IAiBrain
     {
-        [SerializeField] private GameObject _gameRuleObject;
+        [SerializeField] private GameObject _pairRuleObject;
 
         private IPairRule _pairRule;
 
         private void Awake()
         {
-            _pairRule ??= _gameRuleObject.GetComponent<IPairRule>();
+            _pairRule ??= _pairRuleObject.GetComponent<IPairRule>();
         }
         public CardData[] FindPair(CardData[] handCards)
         {
@@ -30,8 +30,11 @@ namespace Modules.Gameplay
             {
                 candidatePair[0] = handCards[i];
                 
-                for (int j = 1; j < handCards.Length; j++)
+                for (int j = 0; j < handCards.Length; j++)
                 {
+                    if (handCards[j] == handCards[i])
+                        continue;
+
                     candidatePair[1] = handCards[j];
                     var currentValue = _pairRule.CalculatePair(candidatePair);
 

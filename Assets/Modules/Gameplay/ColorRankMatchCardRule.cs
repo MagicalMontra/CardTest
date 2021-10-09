@@ -7,9 +7,8 @@ namespace Modules.Gameplay
 {
     public class ColorRankMatchCardRule : MonoBehaviour, ICardRule
     {
+
         [SerializeField] private float _value;
-        [SerializeField] private string _rankValue;
-        [SerializeField] private string _colorValue;
 
         public float IsMatch(CardData[] commitCards)
         {
@@ -21,9 +20,9 @@ namespace Modules.Gameplay
                 resultRank += number;
             }
             
-            var colorRankMatch = commitCards.All(card => card.color == _colorValue && card.rank == _rankValue);
+            var colorRankMatch = commitCards.All(card => card.color == commitCards[0].color && card.rank == commitCards[0].rank);
             
-            return colorRankMatch ? resultRank + _value : resultRank;
+            return colorRankMatch ? resultRank + _value : 0;
         }
     }
 }
